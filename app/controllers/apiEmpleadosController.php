@@ -82,51 +82,61 @@ class ApiEmpleadosController
     //traigo la lista de todos los empleados
     public function getAll($params = null)
     {
-        $orderBy = $_GET["orderBy"] ?? null;
-        $order = $_GET["order"] ?? null;
-        $limit = $_GET["limit"] ?? null;
-        $page =  $_GET["page"] ?? null;
-        $column =  $_GET["column"] ?? null;
-        $filtervalue = $_GET["filtervalue"] ?? null;
+        try {
+            $orderBy = $_GET["orderBy"] ?? null;
+            $order = $_GET["order"] ?? null;
+            $limit = $_GET["limit"] ?? null;
+            $page =  $_GET["page"] ?? null;
+            $column =  $_GET["column"] ?? null;
+            $filtervalue = $_GET["filtervalue"] ?? null;
 
-        //valido los $_Get[]
-        $this->validate($column, $orderBy, $order, $limit, $page);
+            //valido los $_Get[]
+            $this->validate($column, $orderBy, $order, $limit, $page);
 
-        $empleados = $this->modelo->getAll($column, $filtervalue, $orderBy, $order, $limit, $page);
-       
-       if ($empleados){
-        return $this->vista->response($empleados, 200);
-        } else{
-            $this->vista->response("No es posible hacer esa búsqueda", 404);
+            $empleados = $this->modelo->getAll($column, $filtervalue, $orderBy, $order, $limit, $page);
+
+            if ($empleados) {
+                return $this->vista->response($empleados, 200);
+            } else {
+                $this->vista->response("No es posible hacer esa búsqueda", 404);
+            }
+        } catch (Exception $e) {
+            $this->vista->response($e->getMessage(), 500);
         }
     }
-
-
 
 
     //traigo un empleado
     public function get($params = null)
     {
-        $id = $params[':ID'];
-        $empleado = $this->modelo->get($id);
-        if (!empty($empleado)) {
-            $this->vista->response($empleado);
-        } else
-            $this->vista->response("Empleado id=$id not found", 404);
+        try {
+            $id = $params[':ID'];
+            $empleado = $this->modelo->get($id);
+            if (!empty($empleado)) {
+                $this->vista->response($empleado);
+            } else
+                $this->vista->response("Empleado id=$id not found", 404);
+        } catch (Exception $e) {
+            $this->vista->response($e->getMessage(), 500);
+        }
     }
 
 
 
     public function delete($params = null)
     {
-        $id = $params[':ID'];
+        try {
+            $id = $params[':ID'];
 
-        $empleado = $this->modelo->get($id);
-        if ($empleado) {
-            $empleado = $this->modelo->delete($id);
-            $this->vista->response("Empleado id=$id remove successfuly");
-        } else {
-            $this->vista->response("Empleado id=$id not found", 404);
+            $empleado = $this->modelo->get($id);
+            if ($empleado) {
+                $empleado = $this->modelo->delete($id);
+                $this->vista->response("Empleado id=$id remove successfuly");
+            } else {
+                $this->vista->response("Empleado id=$id not found", 404);
+            }
+        } catch (Exception $e) {
+            $this->vista->response($e->getMessage(), 500);
         }
     }
 
@@ -134,45 +144,61 @@ class ApiEmpleadosController
 
     public function insert($params = null)
     {
-        $empleado = $this->getData();
+        try {
+            $empleado = $this->getData();
+            if (empty($empleado->nombre) || empty($empleado->dni) || empty($empleado->celular) || empty($empleado->mail) || empty($empleado->id_categoria_fk)) {
+                $this->vista->response("Complete todos los datos", 400);
+            } else {
 
- 
-     if (empty($empleado->nombre) || empty($empleado->dni) || empty($empleado->celular) || empty($empleado->mail) || empty($empleado->id_categoria_fk)) {
-         $this->vista->response("Complete todos los datos", 400);
-
-       } else {
-    
-      if (empty($this->modelo->getByDni($empleado->dni))) {
-                $nuevoEmpleado = $this->modelo->insert($empleado->nombre, $empleado->dni, $empleado->celular, $empleado->mail, $empleado->id_categoria_fk);
-                $empleadoIngresado = $this->modelo->get($nuevoEmpleado);
-                $this->vista->response($empleadoIngresado, 201);
-
-          } else {
-               $this->vista->response("El dni ingresado ya está registrado en el sistema", 400);
-           }
-        
+                if (empty($this->modelo->getByDni($empleado->dni))) {
+                    $nuevoEmpleado = $this->modelo->insert($empleado->nombre, $empleado->dni, $empleado->celular, $empleado->mail, $empleado->id_categoria_fk);
+                    $empleadoIngresado = $this->modelo->get($nuevoEmpleado);
+                    $this->vista->response($empleadoIngresado, 201);
+                } else {
+                    $this->vista->response("El dni ingresado ya está registrado en el sistema", 400);
+                }
+            }
+        } catch (Exception $e) {
+            $this->vista->response($e->getMessage(), 500);
+        }
     }
-}
 
     //edito un empleado
 
     public function upDate($params = null)
     {
-        $id = $params[':ID'];
-        $empleado = $this->modelo->get($id);
+        try {
+            $id = $params[':ID'];
 
-        if ($empleado) {
-            $empleado = $this->getData();
-            $this->modelo->editar($id, $empleado->nombre, $empleado->dni, $empleado->celular, $empleado->mail, $empleado->id_categoria_fk);
-            $empleadoEditado = $this->modelo->get($id);
-           
-            $this->vista->response($empleadoEditado, 201);
-        } else {
-            $this->vista->response("Empleado id=$id not found", 404);
+            $empleado = $this->modelo->get($id);
+
+            if ($empleado) {
+                $empleadoaModificar = $this->getData();
+                //controlo que no falte ningun parametro
+                if (empty($empleado->nombre) || empty($empleado->dni) || empty($empleado->celular) || empty($empleado->mail) || empty($empleado->id_categoria_fk)) {
+                    $this->vista->response("Complete todos los datos", 400);
+                } else {
+
+                    //controlo que el dni no coincida con otro de la base de datos
+                    if (($empleado->dni) == ($empleadoaModificar->dni) || empty($this->modelo->getAll("dni", $empleadoaModificar->dni, null, null, null, null))) {
+                        //valido la edición
+                        $this->modelo->editar($id, $empleadoaModificar->nombre, $empleadoaModificar->dni, $empleadoaModificar->celular, $empleadoaModificar->mail, $empleadoaModificar->id_categoria_fk);
+                        $empleadoEditado = $this->modelo->get($id);
+
+                        $this->vista->response($empleadoEditado, 201);
+                    } else {
+
+                        $this->vista->response("El dni ingresado ya está registrado en el sistema", 400);
+                    }
+                }
+            } else {
+                $this->vista->response("Empleado id=$id not found", 404);
+            }
+        } catch (Exception $e) {
+            $this->vista->response($e->getMessage(), 500);
         }
     }
 }
-
 //http://localhost/proyectos/tpeWeb2-II/api/empleados
 //http://localhost/proyectos/tpeWeb2-II/api/empleados?column=nombre&filtervalue=Luana Valenzuela
 
