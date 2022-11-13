@@ -88,6 +88,7 @@ class ModeloEmpleado
         }
     }
 
+
     //2-  modificamos los campos del empleado seleccionado
     public function editar($nombreAEditar, $nombre, $dni, $celular, $mail, $id_categoria_fk)
     {

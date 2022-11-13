@@ -47,7 +47,7 @@ class ApiEmpleadosController
         }
 
 
-        //ruebo que orderBy esté seteada, que esté en minuscula y esté dentro del arreglo de columnas.
+        //pruebo que orderBy esté seteada, que esté en minuscula y esté dentro del arreglo de columnas.
 
         if ((isset($orderBy)) && (!in_array(strtolower($orderBy), $columns))) {
             $this->vista->response("No es posible ordenar de la forma indicada", 400);
@@ -174,18 +174,24 @@ class ApiEmpleadosController
 
             if ($empleado) {
                 $empleadoaModificar = $this->getData();
+
                 //controlo que no falte ningun parametro
-                if (empty($empleado->nombre) || empty($empleado->dni) || empty($empleado->celular) || empty($empleado->mail) || empty($empleado->id_categoria_fk)) {
+                if (empty($empleadoaModificar->nombre) || empty($empleadoaModificar->dni) || empty($empleadoaModificar->celular) || empty($empleadoaModificar->mail) || empty($empleadoaModificar->id_categoria_fk)) {
                     $this->vista->response("Complete todos los datos", 400);
                 } else {
 
                     //controlo que el dni no coincida con otro de la base de datos
                     if (($empleado->dni) == ($empleadoaModificar->dni) || empty($this->modelo->getAll("dni", $empleadoaModificar->dni, null, null, null, null))) {
-                        //valido la edición
-                        $this->modelo->editar($id, $empleadoaModificar->nombre, $empleadoaModificar->dni, $empleadoaModificar->celular, $empleadoaModificar->mail, $empleadoaModificar->id_categoria_fk);
-                        $empleadoEditado = $this->modelo->get($id);
+                      
+                        //controlo que el dni sea un  valor permitido
+                        if (!is_numeric($empleadoaModificar->dni) || (($empleadoaModificar->dni) < 1)) {
+                            $this->vista->response("El di ingresado no es un valor válido", 400);
+                        } else { //valido la edición
+                            $this->modelo->editar($id, $empleadoaModificar->nombre, $empleadoaModificar->dni, $empleadoaModificar->celular, $empleadoaModificar->mail, $empleadoaModificar->id_categoria_fk);
+                            $empleadoEditado = $this->modelo->get($id);
 
-                        $this->vista->response($empleadoEditado, 201);
+                            $this->vista->response($empleadoEditado, 201);
+                        }
                     } else {
 
                         $this->vista->response("El dni ingresado ya está registrado en el sistema", 400);
