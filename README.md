@@ -5,21 +5,22 @@ Trabajo Practico Especial - Parte 2 - Web 2
 Este Proyecto fue creado para la materia Web 2 de la carrera Tecnicatura Universitaria en Desarrollo de Aplicaciones Informáticas (TUDAI) de  la Universidad Nacional del Centro de la Pcia. de Bs. As. (UNICEN). 
 
 ## Descripción
-El servicio lista los empleados de un servicio de eventos. Permite editar, agregar, eliminar, consultar un empleado o listar a todos. Buscar por filtros de los diferentes campos (nombre, dni, teléfono, mail y/o puesto), paginar y ordenar en forma ascendente o descendente, según el campo elegido. La base de datos que utiliza esa api es "dbproyecto.sql"
+El servicio lista los empleados de un servicio de eventos. Permite editar, agregar, eliminar, consultar un empleado o listar a todos. Buscar por filtros de los diferentes campos (nombre, dni, teléfono, mail y/o puesto), paginar y ordenar en forma ascendente o descendente, según el campo elegido. 
+La base de datos que utiliza esta API es "dbproyecto.sql"
 
 # API Métodos
-La Api esta creada según los principios RESTful, para dar seguridad, confianza y eficiencia en el traspaso de datos. 
+La API esta creada según los principios RESTful, para dar seguridad, confianza y eficiencia en el traspaso de datos. 
 Usa los métodos del protocolo HTTP:
 * GET para acceder a los empleados,
 * POST y PUT para agregar o modificar datos,
 * DELETE para eliminar
- Usamos el formato JSON para enviar y recibir respuestas en la api.
+ Usamos el formato JSON para enviar y recibir respuestas en la API.
 
 ## Endpoints
 El acceso a los recursos de la API es a traves de los endpoints, con los cuales se podrá consultar, editar, agregar, consultar, filtrar, ordenar y paginar los datos de la base de datos "dbproyecto".
 
- * http://localhost/proyectos/tpeWeb2-II/api/empleados
- * http://localhost/proyectos/tpeWeb2-II/api/empleados/:ID
+ * *http://localhost/proyectos/tpeWeb2-II/api/empleados*
+ * *http://localhost/proyectos/tpeWeb2-II/api/empleados/:ID*
 
 
 | Request | Método | Endpoint | Status |
@@ -35,17 +36,17 @@ El acceso a los recursos de la API es a traves de los endpoints, con los cuales 
 # Recursos
 
 ## GET Empleados
-*_http://localhost/proyectos/tpeWeb2-II/api/empleados-*
+*http://localhost/proyectos/tpeWeb2-II/api/empleados*
 
 Retorna una lista con todos los empleados registrados en la empresa. 
 
 ## GET Empleado
-*-http://localhost/web/tpe2/api/products/:ID-*
+*http://localhost/web/tpe2/api/products/:ID*
 
 Retorna el empleado que está registrado en la empresa con el ID indicado en el endpoint.
 
 ## POST Crear Empleado
-*-http://localhost/web/tpe2/api/products/-*
+*ttp://localhost/web/tpe2/api/products*
 
 Permite crear un nuevo empleado y guardarlo en la base de datos.
 ### Formato para crear un empleado
@@ -61,7 +62,7 @@ Para cargar a un nuevo empleado usamos la salida en formato JSON. Se escribe en 
     }
 
 ## PUT Editar Empleado
-*-http://localhost/web/tpe2/api/products/:ID-*
+*http://localhost/web/tpe2/api/products/:ID*
 
 Permite editar uno o más campos de un empleado que esté registrado en la base de datos, es necesario indicar su ID en el endpoint. 
 
@@ -127,7 +128,7 @@ Para paginar los resultados se deben agregan los parámetros de consulta limit y
 
 El siguiente ejemplo, devuelve la página 2 con 3 empleados:
 
-*-http://localhost/proyectos/tpeWeb2-II/api/empleados?page=2&limit=3-*
+*http://localhost/proyectos/tpeWeb2-II/api/empleados?page=2&limit=3*
 
 **Observación:** si omite el parámetro pedido, la página predeterminada será 1 y el limite 10.
 
@@ -136,7 +137,7 @@ Los empleados pueden ordenarse agregando a la consulta los parámetros orderBy (
 
 En el siguiente ejemplo se ordena a la lista de empleados por dni y en forma descendente:
 
-*-http://localhost/proyectos/tpeWeb2-II/api/empleados?orderBy=dni&order=desc-*
+*http://localhost/proyectos/tpeWeb2-II/api/empleados?orderBy=dni&order=desc*
 
 
 **Observación:** si omite el parámetro pedido, el orden predeterminado será por la columna "nombre" y "asc".
@@ -148,13 +149,14 @@ En el ejemplo busca en todos los campos que tienen el id de especificacion 13:
 
 En el siguiente ejemplo se filtra por el campo nombre y el atributo Laura:
 
-*-http://localhost/proyectos/tpeWeb2-II/api/empleados?column=nombre&filtervalue=Laura-*
+*http://localhost/proyectos/tpeWeb2-II/api/empleados?column=nombre&filtervalue=Laura*
 
 
 
 # Errores
-La API devuelve los códigos de respuesta, tanto de las correctas (detalladas con los 2xx) y mensajes propios a los errores. 
-A continuación se detalla el código y sus mensajes de respuesta. 
+La API devuelve los códigos de respuesta, tanto de las correctas (detalladas con los 2xx) como de los mensajes de errores. 
+
+Los códigos de respuesta utilizados en esta API son:
 
 | Status | Código de error | 
 |--------|-----------------|
