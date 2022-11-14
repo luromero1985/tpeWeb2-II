@@ -16,38 +16,25 @@ class ModeloEmpleado
     {
         $params = []; //creo el array
 
+        $offset = $page * $limit - $limit;
+
         $query = "SELECT empleado.id, empleado.nombre, empleado.dni, empleado.celular, empleado.mail, categoria.puesto as puesto 
                     FROM empleado 
                     JOIN categoria ON empleado.id_categoria_fk = categoria.id";
 
 
         if ($column != null) {
-            $query .= " WHERE  $column LIKE ?";   //concateno con query, además le asigno un filtro 
+            $query .= " WHERE  $column LIKE ?";
             array_push($params, "$filtervalue%");
         }
 
-        if ($orderBy != null) {
-            $query .= " ORDER BY $orderBy";
-        }
-
-        if ($order != null) {
-            $query .= " $order";
-        }
-
-        if ($page == null) {
-            $page = 0;
-        }
-
-        if ($limit != null) {
-            $offset = $page * $limit - $limit;
-            $query .= " LIMIT  $limit OFFSET $offset";
-        }
+        $query .= " ORDER BY $orderBy $order LIMIT $limit OFFSET $offset";
 
 
         $_query = $this->db->prepare($query);
         $_query->execute($params);
 
-       return $_query->fetchAll(PDO::FETCH_OBJ);
+        return $_query->fetchAll(PDO::FETCH_OBJ);
     }
 
 
@@ -114,53 +101,4 @@ class ModeloEmpleado
         return $resultado;
     }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-//esto se usó solo en la primera entrega
-
-    // traigo un empleado de la tabla por nombre
-    public function getByNombre($nombreBuscado)
-    {
-        //la base de datos ya está abierta por el constructor de la clase
-        //ejecutamos la sentencia
-        $query = $this->db->prepare("SELECT empleado.id, empleado.nombre, empleado.dni, empleado.celular, empleado.mail, categoria.puesto as puesto FROM empleado JOIN categoria ON empleado.id_categoria_fk = categoria.id WHERE nombre LIKE ?");
-
-        $query->execute(["%${nombreBuscado}%"]);
-        $resultado = $query->fetchAll(PDO::FETCH_OBJ); //me devuelve un arreglo de objetos, fetch me devuelve solo un arreglo
-
-        return $resultado;
-    }
-
-
-    // traigo un empleado de la tabla por categoria 
-    public function getByPuesto($puestobuscado)
-    {
-        //la base de datos ya está abierta por el constructor de la clase
-        //ejecutamos la sentencia
-
-        $query = $this->db->prepare("SELECT empleado.id, empleado.nombre, empleado.dni, empleado.celular, empleado.mail, categoria.puesto as puesto FROM empleado JOIN categoria ON empleado.id_categoria_fk = categoria.id WHERE puesto LIKE ?");
-
-        $query->execute(["%${puestobuscado}%"]);
-        $puesto = $query->fetchAll(PDO::FETCH_OBJ);
-
-        return $puesto;
-    }
-
-
-    function getUsuarioLogueado()
-    {
-        //obtengo el usuario de la base de datos         
-        $query = $this->db->prepare("SELECT*FROM usuario WHERE email=?");
-        $query->execute();
-        return $query->fetch(PDO::FETCH_OBJ);
-    }
-
-
-
-    function getpasswordLogueado()
-    {
-        //obtengo el password de la base de datos         
-        $query = $this->db->prepare("SELECT*FROM usuario WHERE password=?");
-        $query->execute();
-        return $query->fetch(PDO::FETCH_OBJ);
-    }
 }

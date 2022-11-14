@@ -83,10 +83,10 @@ class ApiEmpleadosController
     public function getAll($params = null)
     {
         try {
-            $orderBy = $_GET["orderBy"] ?? null;
-            $order = $_GET["order"] ?? null;
-            $limit = $_GET["limit"] ?? null;
-            $page =  $_GET["page"] ?? null;
+            $orderBy = $_GET["orderBy"] ?? "nombre";
+            $order = $_GET["order"] ?? "asc";
+            $limit = $_GET["limit"] ?? 10;
+            $page =  $_GET["page"] ?? 1;
             $column =  $_GET["column"] ?? null;
             $filtervalue = $_GET["filtervalue"] ?? null;
 
@@ -146,14 +146,22 @@ class ApiEmpleadosController
     {
         try {
             $empleado = $this->getData();
+            //controlo que no falte ningún campo
             if (empty($empleado->nombre) || empty($empleado->dni) || empty($empleado->celular) || empty($empleado->mail) || empty($empleado->id_categoria_fk)) {
                 $this->vista->response("Complete todos los datos", 400);
             } else {
-
+                //verifico que el dni ingresado no exista en la base de datos
                 if (empty($this->modelo->getByDni($empleado->dni))) {
+
+                    //controlo que el dni ingresado sea un número
+                    if (!is_numeric($empleado->dni) || (($empleado->dni) < 10)) {
+                        $this->vista->response("El dni ingresado no es un valor válido", 400);
+                    } else{
                     $nuevoEmpleado = $this->modelo->insert($empleado->nombre, $empleado->dni, $empleado->celular, $empleado->mail, $empleado->id_categoria_fk);
                     $empleadoIngresado = $this->modelo->get($nuevoEmpleado);
-                    $this->vista->response($empleadoIngresado, 201);
+                    $this->vista->response($empleadoIngresado, 201);                        
+                    }
+
                 } else {
                     $this->vista->response("El dni ingresado ya está registrado en el sistema", 400);
                 }
@@ -163,7 +171,7 @@ class ApiEmpleadosController
         }
     }
 
-    //edito un empleado
+    //edicion de un empleado
 
     public function upDate($params = null)
     {
@@ -182,10 +190,10 @@ class ApiEmpleadosController
 
                     //controlo que el dni no coincida con otro de la base de datos
                     if (($empleado->dni) == ($empleadoaModificar->dni) || empty($this->modelo->getAll("dni", $empleadoaModificar->dni, null, null, null, null))) {
-                      
+
                         //controlo que el dni sea un  valor permitido
-                        if (!is_numeric($empleadoaModificar->dni) || (($empleadoaModificar->dni) < 1)) {
-                            $this->vista->response("El di ingresado no es un valor válido", 400);
+                        if (!is_numeric($empleadoaModificar->dni) || (($empleadoaModificar->dni) < 10)) {
+                            $this->vista->response("El dni ingresado no es un valor válido", 400);
                         } else { //valido la edición
                             $this->modelo->editar($id, $empleadoaModificar->nombre, $empleadoaModificar->dni, $empleadoaModificar->celular, $empleadoaModificar->mail, $empleadoaModificar->id_categoria_fk);
                             $empleadoEditado = $this->modelo->get($id);
