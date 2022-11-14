@@ -1,5 +1,5 @@
 # Proyecto
-Proyecto Trabajo Practico Especial - Parte 2 - Web 2
+Trabajo Practico Especial - Parte 2 - Web 2
 
 ## Introducción
 Este Proyecto fue creado para la materia Web 2 de la carrera Tecnicatura Universitaria en Desarrollo de Aplicaciones Informáticas (TUDAI) de  la Universidad Nacional del Centro de la Pcia. de Bs. As. (UNICEN). 
