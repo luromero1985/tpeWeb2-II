@@ -95,10 +95,11 @@ class ApiEmpleadosController
 
             $empleados = $this->modelo->getAll($column, $filtervalue, $orderBy, $order, $limit, $page);
 
+            //traigo la lista de empleados que responden a la busqueda de la request
             if ($empleados) {
                 return $this->vista->response($empleados, 200);
             } else {
-                $this->vista->response("No es posible hacer esa búsqueda", 404);
+                $this->vista->response("En la base de datos, no hay empleados que respondan a su búsqueda", 204);
             }
         } catch (Exception $e) {
             $this->vista->response($e->getMessage(), 500);
@@ -213,34 +214,3 @@ class ApiEmpleadosController
         }
     }
 }
-//http://localhost/proyectos/tpeWeb2-II/api/empleados
-//http://localhost/proyectos/tpeWeb2-II/api/empleados?column=nombre&filtervalue=Luana Valenzuela
-
-/*filtro orden por nombre
-http://localhost/proyectos/tpeWeb2-II/api/empleados?orderBy=nombre&order=asc
-*/
-
-/*filtro orden por dni
-http://localhost/proyectos/tpeWeb2-II/api/empleados?orderBy=dni&order=asc
-*/
-
-
-/*filtro por paginado
-http://localhost/proyectos/tpeWeb2-II/api/empleados?page=10&limit=20
-*/
-
-/*
-http://localhost/proyectos/tpeWeb2-II/api/empleados?column=nombre&filtervalue=Lu&orderBy=nombre&order=desc
-*/
-
-
-/*
-  para insertar o editar un empleado uso la fk
-     {
-        "nombre": "Amya Payes",
-        "dni": 31701220,
-        "celular": "2494026102",
-        "mail": "ami@gmail.com",
-        "id_categoria_fk": 3
-    }
- */

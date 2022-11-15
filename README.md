@@ -153,14 +153,23 @@ En el siguiente ejemplo se filtra por el campo nombre y el atributo Laura:
 
 
 
-# Errores
-La API devuelve los códigos de respuesta, tanto de las correctas (detalladas con los 2xx) como de los mensajes de errores. 
+# Respuestas
 
-Los códigos de respuesta utilizados en esta API son:
+La API REST responde a cada solicitud con un código de respuesta HTTP y un mensaje de error. Los códigos utilizados en este proyecto son:
 
-| Status | Código de error | 
+
+* Códigos de respuesta de error.
+
+| Status | Código de respuesta | 
 |--------|-----------------|
 | 400 | “Bad request” | 
 | 404 | “Not found” | 
 | 500 |	“Internal server error” |
 
+* Los códigos de respuesta de confirmación.
+
+| Status | Código de respuesta | 
+|--------|-----------------|
+| 200 | “Ok” | 
+| 201 | “Created” | 
+| 204 |	“No content” |
