@@ -78,6 +78,12 @@ Para cargar a un nuevo empleado usamos la salida en formato JSON. Se escribe en 
         "id_categoria_fk": 13
     }
 
+### DELETE Eliminar Empleado
+*http://localhost/web/tpe2/api/products/:ID*
+
+Permite eliminar el registro de un empleado de la base de datos, es necesario indicar su ID en el endpoint. 
+
+
 
 ### Tabla de equivalencia entre foreign key (fk) y puestos de trabajo
 El puesto de trabajo corresponde a la columna "id_categorias_fk" de la tabla de empleados, ésta está vinculada a la columna "id" de la tabla categorías, donde indica el puesto de trabajo. La relación clave-puesto se muestra en la siguiente tabla:  
