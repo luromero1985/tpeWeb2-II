@@ -18,6 +18,7 @@ class ApiVista
           200 => "OK",
           201 => "Created",
           204 => "No content",
+          205 => "Reset content",
           400 => "Bad request",
           404 => "Not found",
           500 => "Internal Server Error"

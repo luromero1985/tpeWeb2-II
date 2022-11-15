@@ -172,4 +172,8 @@ La API REST responde a cada solicitud con un código de respuesta HTTP y un mens
 |--------|-----------------|
 | 200 | “Ok” | 
 | 201 | “Created” | 
+| 204 | "No content" |
+| 205 | "Reset content" |
 | 204 |	“No content” |
+
+**Observación:** El código 205 se ejecuta inmediatamente después del 204, por lo que veremos el mensaje de ambos, pero el código 205.

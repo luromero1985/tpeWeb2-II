@@ -98,8 +98,10 @@ class ApiEmpleadosController
             //traigo la lista de empleados que responden a la busqueda de la request
             if ($empleados) {
                 return $this->vista->response($empleados, 200);
+                
             } else {
-                $this->vista->response("En la base de datos, no hay empleados que respondan a su búsqueda", 204);
+            $this->vista->response("En la base de datos, no hay empleados que respondan a su búsqueda", 204);
+            $this->vista->response("Si desea, realice una nueva búsqueda", 205);
             }
         } catch (Exception $e) {
             $this->vista->response($e->getMessage(), 500);
